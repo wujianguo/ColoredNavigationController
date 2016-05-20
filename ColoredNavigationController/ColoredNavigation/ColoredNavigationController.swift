@@ -8,28 +8,88 @@
 
 import UIKit
 
-class ColoredNavigationController: UINavigationController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+class ColoredBaseViewController: UIViewController {
 
-        // Do any additional setup after loading the view.
+    func navigationBarTransparent() -> Bool {
+        return false
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func navigationBarBarTintColor() -> UIColor? {
+        return navigationController?.navigationBar.barTintColor
     }
-    
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    func navigationBarTintColor() -> UIColor {
+        return navigationController!.navigationBar.tintColor
     }
-    */
 
+    func navigationBarBarStyle() -> UIBarStyle {
+        return navigationController!.navigationBar.barStyle
+    }
+
+    func navigationBarTranslucent() -> Bool {
+        return navigationController!.navigationBar.translucent
+    }
+
+    func navigationBarTitleTextAttributes() -> [String : AnyObject]? {
+        return navigationController?.navigationBar.titleTextAttributes
+    }
+
+
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        addFakeNavigationBar()
+    }
+
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        self.updateNavigationBarUI(navigationController?.navigationBar)
+        self.removeFakeNavigationBar()
+    }
+
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        addFakeNavigationBar()
+    }
+
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        updateNavigationBarUI(navigationController?.navigationBar)
+        removeFakeNavigationBar()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        fakeBar?.frame = CGRectMake(0, 0, CGRectGetWidth(view.bounds), topLayoutGuide.length)
+    }
+
+    func updateNavigationBarUI(bar: UINavigationBar?) {
+        bar?.translucent = navigationBarTranslucent()
+        bar?.barTintColor = navigationBarBarTintColor()
+        bar?.tintColor = navigationBarTintColor()
+        bar?.barStyle = navigationBarBarStyle()
+        bar?.titleTextAttributes = navigationBarTitleTextAttributes()
+        if navigationBarTransparent() {
+            bar?.shadowImage = UIImage()
+            bar?.setBackgroundImage(UIImage(), forBarMetrics: .Default)
+        } else {
+            bar?.shadowImage = nil;
+            bar?.setBackgroundImage(nil, forBarMetrics: .Default)
+        }
+    }
+
+    var fakeBar: UINavigationBar?
+    func addFakeNavigationBar() {
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: .Default)
+        fakeBar = UINavigationBar()
+        updateNavigationBarUI(fakeBar!)
+        view.addSubview(fakeBar!)
+        fakeBar?.frame = CGRectMake(0, 0, CGRectGetWidth(view.bounds), topLayoutGuide.length)
+    }
+
+    func removeFakeNavigationBar() {
+        fakeBar?.removeFromSuperview()
+        fakeBar = nil
+    }
 }
