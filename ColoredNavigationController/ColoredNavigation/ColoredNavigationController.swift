@@ -18,24 +18,11 @@ class ColoredBaseViewController: UIViewController {
     func navigationBarBarTintColor() -> UIColor? {
         return navigationController?.navigationBar.barTintColor
     }
-
-    func navigationBarTintColor() -> UIColor {
-        return navigationController!.navigationBar.tintColor
-    }
-
+    
     func navigationBarBarStyle() -> UIBarStyle {
         return navigationController!.navigationBar.barStyle
     }
-
-    func navigationBarTranslucent() -> Bool {
-        return navigationController!.navigationBar.translucent
-    }
-
-    func navigationBarTitleTextAttributes() -> [String : AnyObject]? {
-        return navigationController?.navigationBar.titleTextAttributes
-    }
-
-
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         addFakeNavigationBar()
@@ -54,7 +41,6 @@ class ColoredBaseViewController: UIViewController {
 
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        updateNavigationBarUI(navigationController?.navigationBar)
         removeFakeNavigationBar()
     }
 
@@ -64,11 +50,8 @@ class ColoredBaseViewController: UIViewController {
     }
 
     func updateNavigationBarUI(bar: UINavigationBar?) {
-        bar?.translucent = navigationBarTranslucent()
         bar?.barTintColor = navigationBarBarTintColor()
-        bar?.tintColor = navigationBarTintColor()
         bar?.barStyle = navigationBarBarStyle()
-        bar?.titleTextAttributes = navigationBarTitleTextAttributes()
         if navigationBarTransparent() {
             bar?.shadowImage = UIImage()
             bar?.setBackgroundImage(UIImage(), forBarMetrics: .Default)
